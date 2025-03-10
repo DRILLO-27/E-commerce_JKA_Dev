@@ -37,7 +37,7 @@ class _FoodPageBodyState extends State<FoodPageBody> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        Container(
+        SizedBox(
           // color Colors.redAccent,
           height: 320,
           child: PageView.builder(
