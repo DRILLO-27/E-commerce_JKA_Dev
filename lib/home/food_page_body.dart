@@ -1,6 +1,7 @@
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/utils/colors.dart';
+import 'package:flutter_application_1/utils/dimensions.dart';
 import 'package:flutter_application_1/widgets/big_text.dart';
 import 'package:flutter_application_1/widgets/icon_and_text_widget.dart';
 import 'package:flutter_application_1/widgets/small_text.dart';
@@ -23,7 +24,7 @@ class _FoodPageBodyState extends State<FoodPageBody> {
     super.initState();
     pageController.addListener(() {
       setState(() {
-        _currPageValue = pageController.page!;
+        _currPageValue = pageController.page ?? 0.0;
       });
     });
   }
@@ -31,14 +32,15 @@ class _FoodPageBodyState extends State<FoodPageBody> {
   @override
   void dispose() {
     pageController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SizedBox(
-          // color Colors.redAccent,
+        // Slider section
+        Container(
           height: 320,
           child: PageView.builder(
             controller: pageController,
@@ -48,9 +50,11 @@ class _FoodPageBodyState extends State<FoodPageBody> {
             },
           ),
         ),
-        new DotsIndicator(
+        
+        // Dots indicator
+        DotsIndicator(
           dotsCount: 5,
-          position: _currPageValue,
+          position: _currPageValue.roundToDouble(),
           decorator: DotsDecorator(
             activeColor: AppColor.mainColor,
             size: const Size.square(9.0),
@@ -58,29 +62,122 @@ class _FoodPageBodyState extends State<FoodPageBody> {
             activeShape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(5.0)),
           ),
-        )
+        ),
+
+        // Popular Text
+        SizedBox(height: Dimensions.height30),
+        Container(
+          margin: EdgeInsets.only(left: Dimensions.width30),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              BigText(text: "Popular"),
+              SizedBox(width: Dimensions.width10),
+              Container(
+                margin: EdgeInsets.only(bottom: 3),
+                child: BigText(text: ".", color: Colors.black26),
+              ),
+              SizedBox(width: Dimensions.width10),
+              Container(
+                margin: const EdgeInsets.only(bottom: 2),
+                child: SmallText(text: "Sushi de progreso"),
+              ),
+            ],
+          ),
+        ),
+
+        // Lista de elementos
+        Container(
+          height: 900,
+          child: ListView.builder(
+            physics: NeverScrollableScrollPhysics(),
+            itemCount: 10, // Definir el número de elementos
+            itemBuilder: (context, index) {
+              return Container(
+                margin: EdgeInsets.only(left: Dimensions.width20, right: Dimensions.width20, bottom: Dimensions.height10),
+                child: Row(
+                  children: [
+                    // Imagen
+                    Container(
+                      width: 120,
+                      height: 120,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(Dimensions.radius20),
+                        color: Colors.white38,
+                        image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: AssetImage("assets/image/food1.png"),
+                        ),
+                      ),
+                    ),
+                    SizedBox(width: Dimensions.width10), // Espacio entre imagen y texto
+                    // Texto
+                    Expanded(
+                      child: Container(
+                        height: 120,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(Dimensions.radius20),
+                          color: Colors.white,
+                        ),
+                        child: Padding(
+                          padding: EdgeInsets.all(Dimensions.width10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              BigText(text: "Sushi de Alpizar"), // Título
+                              SmallText(text: "Desde Progreso"), // Subtítulo
+                              SizedBox(height: Dimensions.height10), // Espacio
+                              // Información adicional
+                              Row(
+                                children: [
+                                  IconAndTextWidget(
+                                    icon: Icons.circle_sharp,
+                                    text: "Normal",
+                                    iconColor: AppColor.iconColor1,
+                                  ),
+                                  IconAndTextWidget(
+                                    icon: Icons.location_on,
+                                    text: "1.7km",
+                                    iconColor: AppColor.mainColor,
+                                  ),
+                                  IconAndTextWidget(
+                                    icon: Icons.access_time_rounded,
+                                    text: "32min",
+                                    iconColor: AppColor.iconColor2,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
       ],
     );
   }
-
+  
   Widget _buildPageItem(int index) {
     Matrix4 matrix = new Matrix4.identity();
     if (index == _currPageValue.floor()) {
       var currScale = 1 - (_currPageValue - index) * (1 - _scaleFactor);
       var currTrans = _height * (1 - currScale) / 2;
-      matrix = Matrix4.diagonal3Values(1, _currPageValue, 1)
+      matrix = Matrix4.diagonal3Values(1, currScale, 1)
         ..setTranslationRaw(0, currTrans, 0);
     } else if (index == _currPageValue.floor() + 1) {
       var currScale =
           _scaleFactor + (_currPageValue - index + 1) * (1 - _scaleFactor);
       var currTrans = _height * (1 - currScale) / 2;
-      matrix = Matrix4.diagonal3Values(1, currScale, 1);
       matrix = Matrix4.diagonal3Values(1, currScale, 1)
         ..setTranslationRaw(0, currTrans, 0);
     } else if (index == _currPageValue.floor() - 1) {
       var currScale = 1 - (_currPageValue - index) * (1 - _scaleFactor);
       var currTrans = _height * (1 - currScale) / 2;
-      matrix = Matrix4.diagonal3Values(1, currScale, 1);
       matrix = Matrix4.diagonal3Values(1, currScale, 1)
         ..setTranslationRaw(0, currTrans, 0);
     } else {
@@ -97,7 +194,7 @@ class _FoodPageBodyState extends State<FoodPageBody> {
             height: 220,
             margin: EdgeInsets.only(left: 10, right: 10),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(30), // Eliminé 'Directional'
+              borderRadius: BorderRadius.circular(30),
               color: index.isEven ? Color(0xFF69c5df) : Color(0xFF9294cc),
               image: DecorationImage(
                 fit: BoxFit.cover,
