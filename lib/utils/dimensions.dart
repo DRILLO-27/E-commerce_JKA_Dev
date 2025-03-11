@@ -6,9 +6,11 @@ class Dimensions {
   static double screenWidth = Get.context!.width;
 
   static double pageview= screenHeight/2.64;
+ 
  // Sin importar el tamaño de la pantalla se dividira en 3.84
   static double pageviewcontainer= screenHeight/3.84;
-// Este sera para el Texto
+ 
+ // Este sera para el Texto
   static double pageviewTextcontainer= screenHeight/7.03;
 
   // Dinamica de la Altura de los padding y margin
@@ -26,7 +28,9 @@ class Dimensions {
   static double width45 = screenWidth/18.76;
 
   // Para el tamaño de la fuente
+  static double font16 = screenHeight/52.75;
   static double font20 = screenHeight/42.2;
+  static double font26 = screenHeight/32.46;
 
   // Para el radio de los contenedores
   static double radius15 = screenHeight/56.27;
@@ -35,6 +39,7 @@ class Dimensions {
 
   // Para el tamaño de los iconos
   static double iconSize24 = screenHeight/35.17;
+  static double iconSize16 = screenHeight/52.75;
 
   // lista view size
   static double listViewImgSize = screenWidth / 3.25;
@@ -42,4 +47,7 @@ class Dimensions {
 
   //popular food
   static double popularFoodImgSize = screenHeight / 2.41;
+
+  //bottom height
+  static double bottomHeightBar = screenHeight/7.03;
 }
