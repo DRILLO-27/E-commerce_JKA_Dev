@@ -3,15 +3,15 @@ import 'package:flutter_application_1/utils/colors.dart';
 import 'package:flutter_application_1/utils/dimensions.dart';
 import 'package:flutter_application_1/widgets/small_text.dart';
 
-class ExandableTextWidget extends StatefulWidget {
+class ExpandableTextWidget extends StatefulWidget {
   final String text;
-  const ExandableTextWidget({super.key, required this.text});
+  const ExpandableTextWidget({super.key, required this.text});
   
   @override
-  State<ExandableTextWidget> createState() => _ExandableTextWidgetState();
+  State<ExpandableTextWidget> createState() => _ExandableTextWidgetState();
 }
 
-class _ExandableTextWidgetState extends State<ExandableTextWidget> {
+class _ExandableTextWidgetState extends State<ExpandableTextWidget> {
   late String firsrHalf;
   late String secondHalf;
 
