@@ -1,10 +1,13 @@
 import 'package:dots_indicator/dots_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/controllers/popular_product_controller.dart';
+import 'package:flutter_application_1/models/products_model.dart';
 import 'package:flutter_application_1/utils/colors.dart';
 import 'package:flutter_application_1/utils/dimensions.dart';
 import 'package:flutter_application_1/widgets/big_text.dart';
 import 'package:flutter_application_1/widgets/icon_and_text_widget.dart';
 import 'package:flutter_application_1/widgets/small_text.dart';
+import 'package:get/get.dart';
 
 class FoodPageBody extends StatefulWidget {
   const FoodPageBody({Key? key}) : super(key: key);
@@ -40,30 +43,36 @@ class _FoodPageBodyState extends State<FoodPageBody> {
     return Column(
       children: [
         // Slider section
-        Container(
-          height: 320,
-          child: PageView.builder(
-            controller: pageController,
-            itemCount: 5,
-            itemBuilder: (context, position) {
-              return _buildPageItem(position);
-            },
-          ),
-        ),
-        
+        GetBuilder<PopularProductController>(builder: (popularProducts) {
+          return Container(
+            //color: Colors.redAccent
+            height: Dimensions.pageview,
+            child: PageView.builder(
+              controller: pageController,
+              itemCount: popularProducts.popularProductList.length,
+              itemBuilder: (context, position) {
+                return _buildPageItem(
+                    position, popularProducts.popularProductList[position]);
+              },
+            ),
+          );
+        }),
         // Dots indicator
-        DotsIndicator(
-          dotsCount: 5,
-          position: _currPageValue.roundToDouble(),
-          decorator: DotsDecorator(
-            activeColor: AppColor.mainColor,
-            size: const Size.square(9.0),
-            activeSize: const Size(18.0, 9.0),
-            activeShape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(5.0)),
-          ),
-        ),
-
+        GetBuilder<PopularProductController>(builder: (popularProducts) {
+          return DotsIndicator(
+            dotsCount: popularProducts.popularProductList.isEmpty
+                ? 1
+                : popularProducts.popularProductList.length,
+            position: _currPageValue,
+            decorator: DotsDecorator(
+              activeColor: AppColor.mainColor,
+              size: const Size.square(9.0),
+              activeSize: const Size(18.0, 9.0),
+              activeShape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5.0)),
+            ),
+          );
+        }),
         // Popular Text
         SizedBox(height: Dimensions.height30),
         Container(
@@ -87,82 +96,86 @@ class _FoodPageBodyState extends State<FoodPageBody> {
         ),
 
         // Lista de elementos
-        Container(
-          height: 900,
-          child: ListView.builder(
-            physics: NeverScrollableScrollPhysics(),
-            itemCount: 10, // Definir el número de elementos
-            itemBuilder: (context, index) {
-              return Container(
-                margin: EdgeInsets.only(left: Dimensions.width20, right: Dimensions.width20, bottom: Dimensions.height10),
-                child: Row(
-                  children: [
-                    // Imagen
-                    Container(
-                      width: 120,
+        ListView.builder(
+          physics: NeverScrollableScrollPhysics(),
+          shrinkWrap: true,
+          itemCount: 10, // Definir el número de elementos
+          itemBuilder: (context, index) {
+            return Container(
+              margin: EdgeInsets.only(
+                  left: Dimensions.width20,
+                  right: Dimensions.width20,
+                  bottom: Dimensions.height10),
+              child: Row(
+                children: [
+                  // Imagen
+                  Container(
+                    width: 120,
+                    height: 120,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(Dimensions.radius20),
+                      color: Colors.white38,
+                      image: DecorationImage(
+                        fit: BoxFit.cover,
+                        image: AssetImage("assets/image/food1.png"),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                      width:
+                          Dimensions.width10), // Espacio entre imagen y texto
+                  // Texto
+                  Expanded(
+                    child: Container(
                       height: 120,
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(Dimensions.radius20),
-                        color: Colors.white38,
-                        image: DecorationImage(
-                          fit: BoxFit.cover,
-                          image: AssetImage("assets/image/food1.png"),
+                        borderRadius:
+                            BorderRadius.circular(Dimensions.radius20),
+                        color: Colors.white,
+                      ),
+                      child: Padding(
+                        padding: EdgeInsets.all(Dimensions.width10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            BigText(text: "Sushi de Alpizar"), // Título
+                            SmallText(text: "Desde Progreso"), // Subtítulo
+                            SizedBox(height: Dimensions.height10), // Espacio
+                            // Información adicional
+                            Row(
+                              children: [
+                                IconAndTextWidget(
+                                  icon: Icons.circle_sharp,
+                                  text: "Normal",
+                                  iconColor: AppColor.iconColor1,
+                                ),
+                                IconAndTextWidget(
+                                  icon: Icons.location_on,
+                                  text: "1.7km",
+                                  iconColor: AppColor.mainColor,
+                                ),
+                                IconAndTextWidget(
+                                  icon: Icons.access_time_rounded,
+                                  text: "32min",
+                                  iconColor: AppColor.iconColor2,
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                       ),
                     ),
-                    SizedBox(width: Dimensions.width10), // Espacio entre imagen y texto
-                    // Texto
-                    Expanded(
-                      child: Container(
-                        height: 120,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(Dimensions.radius20),
-                          color: Colors.white,
-                        ),
-                        child: Padding(
-                          padding: EdgeInsets.all(Dimensions.width10),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              BigText(text: "Sushi de Alpizar"), // Título
-                              SmallText(text: "Desde Progreso"), // Subtítulo
-                              SizedBox(height: Dimensions.height10), // Espacio
-                              // Información adicional
-                              Row(
-                                children: [
-                                  IconAndTextWidget(
-                                    icon: Icons.circle_sharp,
-                                    text: "Normal",
-                                    iconColor: AppColor.iconColor1,
-                                  ),
-                                  IconAndTextWidget(
-                                    icon: Icons.location_on,
-                                    text: "1.7km",
-                                    iconColor: AppColor.mainColor,
-                                  ),
-                                  IconAndTextWidget(
-                                    icon: Icons.access_time_rounded,
-                                    text: "32min",
-                                    iconColor: AppColor.iconColor2,
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
+                  ),
+                ],
+              ),
+            );
+          },
         ),
       ],
     );
   }
-  
-  Widget _buildPageItem(int index) {
+
+  Widget _buildPageItem(int index, ProductModel popularProduct) {
     Matrix4 matrix = new Matrix4.identity();
     if (index == _currPageValue.floor()) {
       var currScale = 1 - (_currPageValue - index) * (1 - _scaleFactor);
@@ -191,10 +204,10 @@ class _FoodPageBodyState extends State<FoodPageBody> {
       child: Stack(
         children: [
           Container(
-            height: 220,
+            height: Dimensions.pageviewcontainer,
             margin: EdgeInsets.only(left: 10, right: 10),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(30),
+              borderRadius: BorderRadius.circular(Dimensions.radius30),
               color: index.isEven ? Color(0xFF69c5df) : Color(0xFF9294cc),
               image: DecorationImage(
                 fit: BoxFit.cover,
